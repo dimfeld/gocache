@@ -26,8 +26,8 @@ are created.
 The DiskCache.ScanExisting function populates the cache's item list from the existing files in
 the cache directory, if desired.
 
-### MultiLevelCache
-MultiLevelCache is a wrapper for multiple Caches. It starts with the first cache,
+### MultiLevel
+MultiLevel is a wrapper for multiple Caches. It starts with the first cache,
 and on a miss queries the upper levels. When an upper-level cache hits, the item
 is filled into the lower-level caches.
 

@@ -6,7 +6,7 @@ Go library with various caching functionality
 
 
 ## Interface
-The Cache interface defines Get, Set, and Del operations, allowing caches objects to be interchanged easily.
+The Cache interface defines Get, Set, and Del operations, allowing cache objects to be interchanged easily.
 
 For each of these functions, the key is a string and the value is the Object type, which contains a []byte slice with the data and a timestamp.
 

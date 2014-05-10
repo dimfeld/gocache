@@ -7,7 +7,7 @@ import (
 	"sync"
 )
 
-type memoryCache struct {
+type MemoryCache struct {
 	lock        sync.RWMutex
 	memoryLimit int // Memory Limit in bytes. This isn't quite accurate.
 	objectLimit int
@@ -15,7 +15,14 @@ type memoryCache struct {
 	memoryUsage int
 }
 
-func (m *memoryCache) Set(path string, item Object) error {
+// Set adds the given item to the cache. Objects whose data exceeds
+// the object size limit are silently not added, but an existing object
+// with the same key will be deleted in this case.
+//
+// If adding an object to the cache would exceed the total memory limit,
+// the cache will be trimmed first. Currently, the trim process evicts all
+// items from the cache.
+func (m *MemoryCache) Set(path string, item Object) error {
 	m.lock.Lock()
 
 	oldItem, ok := m.object[path]
@@ -39,7 +46,7 @@ func (m *memoryCache) Set(path string, item Object) error {
 	return nil
 }
 
-func (m *memoryCache) Del(path string) {
+func (m *MemoryCache) Del(path string) {
 	if strings.HasSuffix(path, "*") {
 		// Delete all matching objects in the cache.
 		// This is slow, and where a radix tree might be better.
@@ -61,7 +68,7 @@ func (m *memoryCache) Del(path string) {
 	}
 }
 
-func (m *memoryCache) Get(path string, filler Filler) (item Object, err error) {
+func (m *MemoryCache) Get(path string, filler Filler) (item Object, err error) {
 	m.lock.RLock()
 	item, ok := m.object[path]
 	m.lock.RUnlock()
@@ -80,16 +87,15 @@ func (m *memoryCache) Get(path string, filler Filler) (item Object, err error) {
 // Trim memory usage of the array. Right now this just clears all the data, which is obviously
 // non-optimal. Once the LRU list is written, it will use that instead.
 // This function assumes that we already have a write lock.
-func (m *memoryCache) trim() {
+func (m *MemoryCache) trim() {
 	m.object = make(map[string]Object)
 	m.memoryUsage = 0
 }
 
-// NewmemoryCache creates a new cache.
-// 	memoryLimit is roughly the maximum amount of memory that will be used.
-//  objectLimit is the largest object that the cache will store, or 0 for no limit.
-func NewMemoryCache(memoryLimit int, objectLimit int) *memoryCache {
-	return &memoryCache{memoryLimit: memoryLimit,
+// NewMemoryCache creates a new cache, with the given limits for total memory and
+// object size. The objectLimit may be set to 0 for no limit.
+func NewMemoryCache(memoryLimit int, objectLimit int) *MemoryCache {
+	return &MemoryCache{memoryLimit: memoryLimit,
 		objectLimit: objectLimit,
 		object:      make(map[string]Object)}
 }

@@ -15,21 +15,23 @@ type Object struct {
 type Filler interface {
 	// Fill adds an object to the cache and also returns the object.
 	// When the file may be compressed or not, Fill may add both versions to the cache, but should return
-	// requested version of the item.
-	// Also, the implementation should be tolerant of a nil value for cache.
+	// the requested version of the item.
+	// Also, the implementation should be tolerant of a nil value for cache. In practice this does
+	// not happen, but it is convenient for the tests.
 	Fill(cache Cache, path string) (Object, error)
 }
 
 type Cache interface {
-	// Get an object, optionally
+	// Get an object from the cache. On a miss, the function calls filler.Fill if it is non-nil.
 	Get(path string, filler Filler) (Object, error)
+	// Set adds an object to the cache.
 	Set(path string, object Object) error
 	// Delete an item from the cache. Include a "*" wildcard at the end to purge multiple items.
 	Del(path string)
 }
 
-// Helper function for adding things to a Cache.
-// It would be nice to have this as a member of Cache, but I need to figure out how to do that in Go.
+// CompressAndSet adds the given object to the cache and also adds a gzipped version of the data,
+// appending ".gz" to the key for the compressed data.
 func CompressAndSet(cache Cache, path string, data []byte, modTime time.Time) (uncompressed Object, compressed Object, err error) {
 
 	compressedPath := path

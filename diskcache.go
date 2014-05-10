@@ -11,6 +11,8 @@ import (
 	"sync"
 )
 
+// DiskCache stores objects on a filesystem under a given directory.
+// The key passed to the cache forms the path, and any subdirectories present in the path are created.
 type DiskCache struct {
 	lock     sync.RWMutex
 	baseDir  string
@@ -39,6 +41,8 @@ func (d *DiskCache) Set(pathStr string, object Object) error {
 	return nil
 }
 
+// Del removes the given item from the cache, using a shell glob to
+// perform the file matching.
 func (d *DiskCache) Del(pathStr string) {
 	pathStr = path.Join(d.baseDir, pathStr)
 	matches, err := filepath.Glob(pathStr)
@@ -102,10 +106,14 @@ func (d *DiskCache) initialScanWalkFunc(filename string, info os.FileInfo, err e
 	return nil
 }
 
+// ScanExisting finds all files under the supplied directory, and adds them to the cache's
+// file list.
 func (d *DiskCache) ScanExisting() {
 	filepath.Walk(d.baseDir, d.initialScanWalkFunc)
 }
 
+// NewDiskCache returns a DiskCache, initialized to store its data under the
+// given directory.
 func NewDiskCache(baseDir string) *DiskCache {
 	return &DiskCache{baseDir: baseDir, fileList: make(map[string]int)}
 }

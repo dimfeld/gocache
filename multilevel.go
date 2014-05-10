@@ -2,7 +2,8 @@ package gocache
 
 import "errors"
 
-// MultiLevel is a simple abstraction to automatically manage multiple levels of caching.
+// MultiLevel is a simple abstraction to automatically manage multiple levels of caching,
+// such as an in-memory cache backed by a disk cache.
 type MultiLevel []Cache
 
 // Get an object from the first level of Cache in which it is found, and add it

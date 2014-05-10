@@ -4,6 +4,8 @@ import (
 	"sort"
 )
 
+// SplitSizeChild specifies a cache and the maximum size of object
+// that the SplitSize should store in it.
 type SplitSizeChild struct {
 	MaxSize int
 	Cache   Cache
@@ -13,12 +15,17 @@ type SplitSizeChild struct {
 // caches depending on the size of the item.
 type SplitSize []SplitSizeChild
 
+// NewSplitSize creates a SplitSize from the supplied SplitSizeChild
+// objects and sorts them by their MaxSize for internal use.
 func NewSplitSize(children ...SplitSizeChild) SplitSize {
 	s := SplitSize(children)
 	sort.Sort(s)
 	return s
 }
 
+// Add a new cache to the list. This should be called with care once data has
+// already been stored, as the SplitSize does not move any data into the
+// appropriate cache when AddChildCache is called.
 func (c SplitSize) AddChildCache(maxSize int, cache Cache) SplitSize {
 	c = append(c, SplitSizeChild{maxSize, cache})
 	sort.Sort(c)
@@ -55,6 +62,7 @@ func (c SplitSize) Set(path string, object Object) error {
 	return nil
 }
 
+// Delete an item from all caches.
 func (c SplitSize) Del(path string) {
 	for _, child := range c {
 		child.Cache.Del(path)

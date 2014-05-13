@@ -1,4 +1,4 @@
-gocache
+gocache [![GoDoc](http://godoc.org/github.com/dimfeld/gocache?status.png)](http://godoc.org/github.com/dimfeld/gocache)
 =======
 
 Go library with various caching functionality
@@ -6,7 +6,7 @@ Go library with various caching functionality
 
 
 ## Interface
-The Cache interface defines Get, Set, and Del operations, allowing caches objects to be interchanged easily.
+The Cache interface defines Get, Set, and Del operations, allowing cache objects to be interchanged easily.
 
 For each of these functions, the key is a string and the value is the Object type, which contains a []byte slice with the data and a timestamp.
 
@@ -26,8 +26,8 @@ are created.
 The DiskCache.ScanExisting function populates the cache's item list from the existing files in
 the cache directory, if desired.
 
-### MultiLevelCache
-MultiLevelCache is a wrapper for multiple Caches. It starts with the first cache,
+### MultiLevel
+MultiLevel is a wrapper for multiple Caches. It starts with the first cache,
 and on a miss queries the upper levels. When an upper-level cache hits, the item
 is filled into the lower-level caches.
 

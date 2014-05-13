@@ -320,7 +320,8 @@ func testCacheFiller(t *testing.T, c Cache) {
 }
 
 func testWildcardDelete(t *testing.T, c Cache) {
-	paths := []string{"abc", "abd", "subdir/abc", "subdir/abd", "ddd", "subdir/ddd"}
+	paths := []string{"abc", "abd", "subdir/abc", "subdir/abd", "ddd",
+		"subdir/ddd", "subdir/sub2/abc"}
 
 	testPattern := func(pattern string) {
 		expected := simpleObject(8)
@@ -358,4 +359,5 @@ func testWildcardDelete(t *testing.T, c Cache) {
 	testPattern("subdir/a")
 	testPattern("subdir/abd")
 	testPattern("d")
+	testPattern("")
 }

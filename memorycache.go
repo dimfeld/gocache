@@ -48,6 +48,12 @@ func (m *MemoryCache) Set(path string, item Object) error {
 
 func (m *MemoryCache) Del(path string) {
 	if strings.HasSuffix(path, "*") {
+		if path == "*" {
+			// Simple case first: everything is being deleted.
+			m.object = make(map[string]Object)
+			m.memoryUsage = 0
+		}
+
 		// Delete all matching objects in the cache.
 		// This is slow, and where a radix tree might be better.
 		// But it also doesn't come up too often.

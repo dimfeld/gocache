@@ -52,6 +52,7 @@ func (m *MemoryCache) Del(path string) {
 			// Simple case first: everything is being deleted.
 			m.object = make(map[string]Object)
 			m.memoryUsage = 0
+			return
 		}
 
 		// Delete all matching objects in the cache.

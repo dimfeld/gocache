@@ -1,4 +1,4 @@
-gocache [![GoDoc](http://godoc.org/github.com/dimfeld/gocache?status.png)](http://godoc.org/github.com/dimfeld/gocache)
+gocache [![Build Status](https://travis-ci.org/dimfeld/gocache.png?branch=master)](https://travis-ci.org/dimfeld/gocache) [![GoDoc](http://godoc.org/github.com/dimfeld/gocache?status.png)](http://godoc.org/github.com/dimfeld/gocache)
 =======
 
 Go library with various caching functionality

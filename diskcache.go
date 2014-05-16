@@ -114,6 +114,10 @@ func (d *DiskCache) ScanExisting() {
 
 // NewDiskCache returns a DiskCache, initialized to store its data under the
 // given directory.
-func NewDiskCache(baseDir string) *DiskCache {
-	return &DiskCache{baseDir: baseDir, fileList: make(map[string]int)}
+func NewDiskCache(baseDir string) (*DiskCache, error) {
+	err := os.MkdirAll(baseDir, 0700)
+	if err != nil {
+		return nil, err
+	}
+	return &DiskCache{baseDir: baseDir, fileList: make(map[string]int)}, nil
 }

@@ -13,7 +13,12 @@ func makeDiskCache(t testing.TB) *DiskCache {
 		t.Errorf("Could not create temporary directory: %s", err)
 		t.FailNow()
 	}
-	return NewDiskCache(dir)
+	c, err := NewDiskCache(dir)
+	if err != nil {
+		t.Errorf("Could not create cache in %s: %s", dir, err)
+		t.FailNow()
+	}
+	return c
 }
 
 func cleanup(c *DiskCache) {

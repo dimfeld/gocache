@@ -3,6 +3,7 @@ package gocache
 import (
 	//"github.com/dimfeld/simpleblog/lru"
 	"errors"
+	"fmt"
 	"strings"
 	"sync"
 )
@@ -89,6 +90,14 @@ func (m *MemoryCache) Get(path string, filler Filler) (item Object, err error) {
 	}
 
 	return item, nil
+}
+
+func (m *MemoryCache) Info() string {
+	info := fmt.Sprintf("Storing %d bytes total\n", m.memoryUsage)
+	for key, object := range m.object {
+		info += fmt.Sprintf("   %s - %d %v\n", key, len(object.Data), object.ModTime)
+	}
+	return info
 }
 
 // Trim memory usage of the array. Right now this just clears all the data, which is obviously

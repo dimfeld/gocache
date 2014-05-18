@@ -50,7 +50,18 @@ func (d *DiskCache) Del(pathStr string) {
 		return
 	}
 
+	// When recursively deleting directories from the cache, it's possible
+	// that d.fileList will become out of sync with reality. But that's ok
+	// since it just exists to prevent disk access on cache misses, so will
+	// just result in a bit of extra disk access.
+
 	d.lock.Lock()
+	if pathStr == "*" {
+		// Due to the above comment, special case when wiping out the entire
+		// cache.
+		d.fileList = make(map[string]int)
+	}
+
 	for _, match := range matches {
 		delete(d.fileList, match)
 		err = os.RemoveAll(match)
@@ -59,6 +70,7 @@ func (d *DiskCache) Del(pathStr string) {
 		}
 	}
 	d.lock.Unlock()
+
 }
 
 func (d *DiskCache) Get(filename string, filler Filler) (Object, error) {
